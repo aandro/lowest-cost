@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalServiceA.Client", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalServiceB.Client", "ExternalServiceB.Client\ExternalServiceB.Client.csproj", "{32491266-69A2-4DAE-B192-1D72CF77B135}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LowestCostService.Tests", "LowestCostService.Tests\LowestCostService.Tests.csproj", "{09BBE19F-6DCE-4598-BF86-F1C4CD1F3DD9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{32491266-69A2-4DAE-B192-1D72CF77B135}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32491266-69A2-4DAE-B192-1D72CF77B135}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32491266-69A2-4DAE-B192-1D72CF77B135}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09BBE19F-6DCE-4598-BF86-F1C4CD1F3DD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09BBE19F-6DCE-4598-BF86-F1C4CD1F3DD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09BBE19F-6DCE-4598-BF86-F1C4CD1F3DD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09BBE19F-6DCE-4598-BF86-F1C4CD1F3DD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
