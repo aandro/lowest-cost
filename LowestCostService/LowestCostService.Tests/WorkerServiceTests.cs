@@ -52,5 +52,30 @@ namespace LowestCostService.Tests
             result.CompanyName.Should().Be(nameof(IExternalServiceA));
             result.TotalPrice.Should().Be(lowestPricePerUnit * TotalPackagesCount);
         }
+
+        [Fact]
+        public async Task GetLowestCostAsync_ShouldReturnLowestCostWithBatches()
+        {
+            // Arrange
+            var lowestPricePerUnit = 10;
+
+            _serviceA
+               .Setup(m => m.GetTotalAsync(It.IsAny<TotalRequest>()))
+               .ReturnsAsync(new ApiResponse<decimal>(new HttpResponseMessage(), lowestPricePerUnit, new RefitSettings()));
+            _serviceB
+                .Setup(m => m.GetTotalAmountAsync(It.IsAny<TotalAmountRequest>()))
+                .ReturnsAsync(new ApiResponse<decimal>(new HttpResponseMessage(), 100, new RefitSettings()));
+
+            var service = new WorkerService(_serviceA.Object, _serviceB.Object, _repository.Object);
+
+            // Act 
+            _ = await service.GetLowestCostAsync(CancellationToken.None);
+            var resultFinal = await service.GetLowestCostAsync(CancellationToken.None); // multiple invokation is a mock for batch behavior
+
+            // Assert
+            resultFinal.Should().NotBeNull();
+            resultFinal.CompanyName.Should().Be(nameof(IExternalServiceA));
+            resultFinal.TotalPrice.Should().Be(lowestPricePerUnit * TotalPackagesCount * 2);
+        }
     }
 }
