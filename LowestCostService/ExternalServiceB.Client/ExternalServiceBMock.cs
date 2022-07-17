@@ -5,8 +5,8 @@ namespace ExternalServiceB.Client
 {
     public class ExternalServiceBMock : IExternalServiceB
     {
-        private const decimal Min = 80;
-        private const decimal Max = 500;
+        private const decimal Min = 50;
+        private const decimal Max = 150;
 
         public Task<ApiResponse<decimal>> GetTotalAmountAsync(TotalAmountRequest request)
         {

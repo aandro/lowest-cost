@@ -15,7 +15,7 @@ namespace LowestCostService.Api.Services
         private readonly IPackageRepository _packageRepository;
 
         private readonly ConcurrentDictionary<string, decimal> _results = new ();
-        private TotalCost _lowestCost;
+        private TotalCost _lowestCost = new TotalCost();
 
         public WorkerService(
             IExternalServiceA externalServiceA,
@@ -35,19 +35,23 @@ namespace LowestCostService.Api.Services
         {
             IReadOnlyCollection<Package> packages = await _packageRepository.GetAllAsync(ct);
 
-            Func<Package, Task> func = async (p) =>
+            await Parallel.ForEachAsync(packages, async (p, ct) =>
             {
                 decimal lowestCost = int.MaxValue;
-                ConcurrentDictionary<decimal, TotalCost> resultsInverseMap = new();
+                Dictionary<decimal, TotalCost> resultsInverseMap = new();
 
                 lowestCost = await GetTotalForPackage(p, lowestCost, resultsInverseMap, GetTotalPriceA);
                 lowestCost = await GetTotalForPackage(p, lowestCost, resultsInverseMap, GetTotalPriceB);
 
-                _lowestCost = resultsInverseMap[lowestCost];
-            };
-
-            var tasks = packages.Select(p => func(p));
-            await Task.WhenAll(tasks);
+                lock (_lock)
+                {
+                    var currentLowestCost = resultsInverseMap[lowestCost];
+                    if (_lowestCost.Version < currentLowestCost.Version)
+                    {
+                        _lowestCost = currentLowestCost;
+                    }
+                }
+            });
 
             return _lowestCost;
         }
@@ -59,14 +63,12 @@ namespace LowestCostService.Api.Services
             Func<Package, Task<TotalCost>> f)
         {
             var result = await f(p);
-
-            lock (_lock)
-            {
-                _results.AddOrUpdate(result.CompanyName, result.TotalPrice, (k, v) => v += result.TotalPrice);
-            }
-
+            
+            _results.AddOrUpdate(result.CompanyName, result.TotalPrice, (k, v) => v += result.TotalPrice);
+            
             var currentValue = _results[result.CompanyName];
-            resultsInverseMap.Add(currentValue, new TotalCost() { CompanyName = result.CompanyName, TotalPrice = currentValue });
+            resultsInverseMap.Add(currentValue, 
+                new TotalCost() { CompanyName = result.CompanyName, TotalPrice = currentValue, Version = DateTime.UtcNow.Ticks });
 
             return Math.Min(currentLowestCost, currentValue);
         }
