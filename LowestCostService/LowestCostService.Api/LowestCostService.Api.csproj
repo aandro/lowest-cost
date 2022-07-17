@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Refit" Version="6.3.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ExternalServiceA.Client\ExternalServiceA.Client.csproj" />
+    <ProjectReference Include="..\ExternalServiceB.Client\ExternalServiceB.Client.csproj" />
+    <ProjectReference Include="..\LowestCostService.Data\LowestCostService.Data.csproj" />
+    <ProjectReference Include="..\LowestCostService.Domain\LowestCostService.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
