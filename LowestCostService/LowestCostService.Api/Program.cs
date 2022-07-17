@@ -1,3 +1,8 @@
+using ExternalServiceA.Client;
+using ExternalServiceB.Client;
+using LowestCostService.Api.Services;
+using LowestCostService.Data;
+
 namespace LowestCostService.Api
 {
     public class Program
@@ -7,8 +12,11 @@ namespace LowestCostService.Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddTransient<IExternalServiceA, ExternalServiceAMock>();
+            builder.Services.AddTransient<IExternalServiceB, ExternalServiceBMock>();
+            builder.Services.AddTransient<IPackageRepository, PackageRepositoryMock>();
+            builder.Services.AddTransient<IWorkerService, WorkerService>();
 
-            builder.Services.AddApiVersioning();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
